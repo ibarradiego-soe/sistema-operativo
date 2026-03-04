@@ -3,6 +3,7 @@
   "routes": [
     { "src": "/", "dest": "/landing.html" },
     { "src": "/test", "dest": "/test.html" },
-    { "src": "/report", "dest": "/report.html" }
+    { "src": "/report", "dest": "/report.html" },
+    { "src": "/api/(.*)", "dest": "/api/$1" }
   ]
 }

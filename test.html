@@ -899,7 +899,7 @@ function submitReg(){
   errEl.style.display='none';
 
   // Store user data in ST for passing to report
-  ST.user = { nombre, apellido, email, edad, pais, profesion };
+  ST.user = { nombre, apellido, correo: email, edad, pais, profesion };
 
   showIntro();
 }

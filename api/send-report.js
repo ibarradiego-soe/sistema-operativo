@@ -154,7 +154,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
       },
       body: JSON.stringify({
-        from: 'Sistema Operativo <onboarding@resend.dev>',
+        from: 'Sistema Operativo <hola@sistemaoperativo.io>',
         to: [email],
         subject: `${firstName}, tu reporte está listo`,
         html

@@ -6,9 +6,8 @@
   const params = new URLSearchParams(window.location.search);
   const sessionId = params.get('session_id');
 
-  // No session_id — block access
+  // No session_id — allow access (direct link or coupon flow)
   if (!sessionId) {
-    window.location.href = '/';
     return;
   }
 

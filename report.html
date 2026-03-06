@@ -150,43 +150,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
 
 /* EMAIL CAPTURE */
 .email-section{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:40px;text-align:center;max-width:560px;margin:60px auto}
-/* ─── ARCHETYPE CARD ─── */
-.archetype-section{max-width:900px;margin:0 auto;padding:60px 24px}
-.archetype-card-wrap{display:flex;flex-direction:column;align-items:center;gap:20px}
-.arch-card{width:420px;max-width:100%;height:520px;border-radius:28px;position:relative;overflow:hidden;flex-shrink:0}
-.arch-card-bg{position:absolute;inset:0}
-.arch-aurora-1,.arch-aurora-2,.arch-aurora-3{position:absolute;border-radius:50%}
-.arch-grid{position:absolute;inset:0}
-.arch-noise{position:absolute;inset:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:128px 128px}
-.arch-bracket{position:absolute;width:20px;height:20px}
-.arch-bracket-tl{top:18px;left:18px;border-top:1.5px solid var(--arch-accent-dim);border-left:1.5px solid var(--arch-accent-dim)}
-.arch-bracket-tr{top:18px;right:18px;border-top:1.5px solid var(--arch-accent-dim);border-right:1.5px solid var(--arch-accent-dim)}
-.arch-bracket-bl{bottom:18px;left:18px;border-bottom:1.5px solid var(--arch-accent-dim);border-left:1.5px solid var(--arch-accent-dim)}
-.arch-bracket-br{bottom:18px;right:18px;border-bottom:1.5px solid var(--arch-accent-dim);border-right:1.5px solid var(--arch-accent-dim)}
-.arch-content{position:relative;z-index:10;height:100%;display:flex;flex-direction:column;padding:30px 32px}
-.arch-top-label{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.arch-soe-label{font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,0.25)}
-.arch-badge{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--arch-accent);border:1px solid var(--arch-accent-dim);padding:3px 9px;border-radius:4px;background:var(--arch-accent-bg)}
-.arch-symbol{margin-bottom:14px}
-.arch-name{font-family:'Syne',sans-serif;font-size:clamp(22px,5vw,30px);font-weight:800;line-height:1.05;letter-spacing:-0.02em;background:var(--arch-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
-.arch-rule{width:40px;height:2px;background:var(--arch-gradient);margin-bottom:12px}
-.arch-phrase{font-size:11.5px;color:rgba(255,255,255,.45);line-height:1.6;font-style:italic;margin-bottom:14px;border-left:2px solid var(--arch-accent-dim);padding-left:11px}
-.arch-personal{font-size:12px;color:rgba(255,255,255,.75);line-height:1.65;margin-bottom:14px}
-.arch-personal strong{color:#fff;font-weight:600}
-.arch-traits{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:auto}
-.arch-trait{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;padding:3px 9px;border-radius:5px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);color:rgba(255,255,255,.55)}
-.arch-footer{display:flex;align-items:center;justify-content:space-between;margin-top:16px}
-.arch-brand{font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.2)}
-.arch-brand span{color:var(--arch-accent);opacity:.6}
-.arch-buttons{display:flex;gap:10px;justify-content:center}
-.arch-btn{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:11px 22px;border-radius:10px;cursor:pointer;font-family:inherit;letter-spacing:.03em;transition:all .18s;border:none}
-.arch-btn-primary{background:var(--arch-accent);color:#000}
-.arch-btn-primary:hover{opacity:.85;transform:translateY(-1px)}
-.arch-btn-secondary{background:var(--arch-accent-bg);border:1px solid var(--arch-accent-dim);color:var(--arch-accent)}
-.arch-btn-secondary:hover{filter:brightness(1.2)}
-
-/* Archetype palette variables injected via JS */
-
 .coach-section{max-width:860px;margin:0 auto;padding:60px 24px}
 .coach-card{background:linear-gradient(135deg,rgba(59,130,246,0.06),rgba(167,139,250,0.06));border:1px solid rgba(167,139,250,0.2);border-radius:20px;padding:36px 40px}
 .coach-tabs{display:flex;gap:8px;margin-bottom:28px;background:var(--surface);padding:6px;border-radius:12px;width:fit-content}
@@ -266,7 +229,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
     <div class="lstep" id="ls4"><div class="ldot">4</div>Construyendo acciones personalizadas</div>
     <div class="lstep" id="ls5"><div class="ldot">5</div>Preparando tu reporte</div>
   </div>
-  <div class="loading-msg" id="loading-msg">Analizando tus 18 dimensiones...</div>
+  <div class="loading-msg" id="loading-msg">Analizando tus 22 dimensiones...</div>
 </div>
 
 <!-- REPORT CONTENT -->
@@ -342,9 +305,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
   <div class="bento bento-12" style="margin-bottom:12px">
     <div class="card">
       <div class="card-label">Perfil de personalidad</div>
-      <div class="chart-container" style="height:300px">
-        <canvas id="chart-big5"></canvas>
-      </div>
+      <div id="big5-bars" style="display:flex;flex-direction:column;gap:14px;padding:4px 0"></div>
     </div>
     <div class="card" style="display:flex;flex-direction:column;gap:16px">
       <div>
@@ -370,8 +331,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
     </div>
   </div>
 
-  <div class="card">
-  </div>
+  
 </div>
 
 <div class="section-divider"></div>
@@ -419,8 +379,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
     </div>
   </div>
 
-  <div class="card">
-  </div>
+  
 </div>
 
 <div class="section-divider"></div>
@@ -463,8 +422,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
     </div>
   </div>
 
-  <div class="card">
-  </div>
+  
 </div>
 
 <div class="section-divider"></div>
@@ -518,8 +476,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
     </div>
   </div>
 
-  <div class="card">
-  </div>
+  
 </div>
 
 <div class="section-divider"></div>
@@ -569,8 +526,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
     </div>
   </div>
 
-  <div class="card">
-  </div>
+  
 </div>
 
 <div class="section-divider"></div>
@@ -617,8 +573,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
     </div>
   </div>
 
-  <div class="card">
-  </div>
+  
 </div>
 
 
@@ -655,8 +610,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
     </div>
   </div>
 
-  <div class="card">
-  </div>
+  
 </div>
 
 
@@ -701,8 +655,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
     </div>
   </div>
 
-  <div class="card">
-  </div>
+  
 </div>
 
 <div class="section-divider"></div>
@@ -714,7 +667,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
   <div class="section-header">
     <div class="section-eyebrow">Bloque 9 — Síntesis final</div>
     <h2 class="section-title">Tu <em>Sistema Operativo</em> completo</h2>
-    <p class="section-desc">El cruce de las 18 dimensiones — lo que ningún test aislado puede darte.</p>
+    <p class="section-desc">El cruce de las 22 dimensiones — lo que ningún test aislado puede darte.</p>
   </div>
 
   <div class="card" style="margin-bottom:12px">
@@ -735,52 +688,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
     </div>
   </div>
 
-  <div class="card">
-  </div>
+  
 </div>
 
-<!-- ══════════════════════════════
-     ARCHETYPE CARD
-══════════════════════════════ -->
-<div class="archetype-section fade-in" id="archetype-section">
-  <div style="text-align:center;margin-bottom:36px">
-    <div class="label" style="justify-content:center;margin-bottom:12px">✦ Tu Arquetipo Emprendedor</div>
-    <h2 class="section-title">Este eres <em>tú</em></h2>
-    <p style="font-size:15px;color:var(--muted);max-width:500px;margin:0 auto;line-height:1.7">Basado en tus 22 dimensiones, este es el patrón que define cómo emprendes.</p>
-  </div>
-  <div class="archetype-card-wrap">
-    <div class="arch-card" id="arch-card">
-      <div class="arch-card-bg" id="arch-bg"></div>
-      <div id="arch-fx"></div>
-      <div class="arch-bracket arch-bracket-tl"></div>
-      <div class="arch-bracket arch-bracket-tr"></div>
-      <div class="arch-bracket arch-bracket-bl"></div>
-      <div class="arch-bracket arch-bracket-br"></div>
-      <div class="arch-content">
-        <div class="arch-top-label">
-          <span class="arch-soe-label">Sistema Operativo</span>
-          <span class="arch-badge" id="arch-badge">Arquetipo</span>
-        </div>
-        <div class="arch-symbol" id="arch-symbol"></div>
-        <div class="arch-name" id="arch-name">—</div>
-        <div class="arch-rule"></div>
-        <div class="arch-phrase" id="arch-phrase">—</div>
-        <div class="arch-personal" id="arch-personal">—</div>
-        <div class="arch-traits" id="arch-traits"></div>
-        <div class="arch-footer">
-          <span class="arch-brand">SOE · <span>sistemaoperativo.io</span></span>
-          <span style="font-size:9px;color:rgba(255,255,255,0.15);letter-spacing:.08em" id="arch-year">2026</span>
-        </div>
-      </div>
-    </div>
-    <div class="arch-buttons">
-      <button class="arch-btn arch-btn-secondary" onclick="downloadArchetypeCard()">⬇ Descargar imagen</button>
-      <button class="arch-btn arch-btn-primary" id="arch-share-btn" onclick="shareArchetype()">↗ Compartir</button>
-    </div>
-  </div>
-</div>
-
-<div class="section-divider"></div>
 
 <!-- AI COACH SECTION -->
 <div class="coach-section fade-in" id="coach-section">
@@ -1093,33 +1003,31 @@ Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
 Chart.defaults.font.family = 'Geist';
 
 function buildBig5Chart(sc){
-  const ctx = document.getElementById('chart-big5').getContext('2d');
-  new Chart(ctx,{
-    type:'radar',
-    data:{
-      labels:['Apertura','Responsabilidad','Extraversión','Amabilidad','Estabilidad'],
-      datasets:[{
-        data:[sc.openness,sc.conscient,sc.extraversion,sc.agreeable,100-sc.neuroticism],
-        backgroundColor:'rgba(59,130,246,0.1)',
-        borderColor:'rgba(59,130,246,0.7)',
-        borderWidth:2,
-        pointBackgroundColor:'#3b82f6',
-        pointRadius:4,
-        pointHoverRadius:6
-      }]
-    },
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      layout:{padding:{top:20,bottom:20,left:32,right:32}},
-      scales:{r:{
-        min:0,max:100,
-        grid:{color:'rgba(255,255,255,0.06)'},
-        ticks:{display:false},
-        pointLabels:{font:{size:12,weight:'500'},color:'rgba(255,255,255,0.6)',padding:10}
-      }},
-      plugins:{legend:{display:false}}
-    }
-  });
+  const dims = [
+    { label: 'Apertura',        value: sc.openness,          color: '#3b82f6' },
+    { label: 'Responsabilidad', value: sc.conscient,         color: '#8b5cf6' },
+    { label: 'Extraversión',    value: sc.extraversion,      color: '#06b6d4' },
+    { label: 'Amabilidad',      value: sc.agreeable,         color: '#10b981' },
+    { label: 'Estabilidad',     value: 100 - sc.neuroticism, color: '#f59e0b' },
+  ];
+
+  const container = document.getElementById('big5-bars');
+  if(!container) return;
+
+  container.innerHTML = dims.map(d => {
+    const pct = Math.round(d.value);
+    const label = pct >= 65 ? 'Alto' : pct >= 35 ? 'Medio' : 'Bajo';
+    return `
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+          <span style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.85)">${d.label}</span>
+          <span style="font-size:12px;color:${d.color};font-weight:700">${pct}% <span style="font-size:10px;color:rgba(255,255,255,0.35);font-weight:400">${label}</span></span>
+        </div>
+        <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:100px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${d.color};border-radius:100px;transition:width 1s ease"></div>
+        </div>
+      </div>`;
+  }).join('');
 }
 
 function buildLeadershipChart(sc){
@@ -2018,8 +1926,9 @@ ${USER_LOCALE.country ? 'El lector vive en ' + USER_LOCALE.country + '. Adapta e
     // Populate actions — model returns single "accion" string; build 3 static cards from it
     if(actionsId){
       const accionText = parsed.accion || parsed.actions?.[0]?.descripcion || '';
-      if(accionText){
-        document.getElementById(actionsId).innerHTML = [
+      const actionsEl = document.getElementById(actionsId);
+      if(accionText && actionsEl){
+        actionsEl.innerHTML = [
           buildAction(1, 'Esta semana', accionText, 'Esta semana', 'tag-now'),
           buildAction(2, 'Patrón a observar', 'Nota cuándo este patrón aparece en situaciones reales hoy — sin juzgarlo, solo registrarlo.', 'Diario', 'tag-daily'),
           buildAction(3, 'Pregunta de integración', '¿Qué parte de este patrón viene de antes de tener un negocio?', 'Esta semana', 'tag-weekly')
@@ -2705,15 +2614,15 @@ async function downloadPDF(event){
   // ── CONTENT PAGES ──────────────────────────────────────────────
   const blocks = [
     { num:0, title:'Lo que este reporte encontró en ti', ai:'ai-intro', actions:null, suggestions:'ai-intro-suggestions' },
-    { num:1, title:'Arquitectura Mental',       ai:'ai-personality',  actions:'actions-personality' },
-    { num:2, title:'Motor Interno',             ai:'ai-motivation',   actions:'actions-motor' },
-    { num:3, title:'Frenos Ocultos',            ai:'ai-brakes',       actions:'actions-brakes' },
-    { num:4, title:'Decisiones y Ejecución',    ai:'ai-decisions',    actions:'actions-decisions' },
-    { num:5, title:'Liderazgo y Vínculos',      ai:'ai-leadership',   actions:'actions-leadership' },
-    { num:6, title:'Zona de Genio',             ai:'ai-genius',       actions:'actions-genius' },
-    { num:7, title:'Brecha de Valores',         ai:'ai-values-gap',   actions:'actions-values-gap' },
-    { num:8, title:'Roles y Complementos',      ai:'ai-roles',        actions:'actions-roles' },
-    { num:9, title:'Tu Sistema Completo',       ai:'ai-synthesis',    actions:'actions-30days' },
+    { num:1, title:'Arquitectura Mental',       ai:'ai-personality',  actions:null },
+    { num:2, title:'Motor Interno',             ai:'ai-motivation',   actions:null },
+    { num:3, title:'Frenos Ocultos',            ai:'ai-brakes',       actions:null },
+    { num:4, title:'Decisiones y Ejecución',    ai:'ai-decisions',    actions:null },
+    { num:5, title:'Liderazgo y Vínculos',      ai:'ai-leadership',   actions:null },
+    { num:6, title:'Zona de Genio',             ai:'ai-genius',       actions:null },
+    { num:7, title:'Brecha de Valores',         ai:'ai-values-gap',   actions:null },
+    { num:8, title:'Roles y Complementos',      ai:'ai-roles',        actions:null },
+    { num:9, title:'Tu Sistema Completo',       ai:'ai-synthesis',    actions:null },
   ];
 
   blocks.forEach(block => {
@@ -2852,12 +2761,6 @@ async function init(){
   // Restore any sections saved from a previous interrupted session
   restoreSavedSections();
 
-  // Render archetype card
-  window._reportScores = sc;
-  const archetype = computeArchetype(sc);
-  const fullName = user && user.nombre ? user.nombre + (user.apellido ? ' ' + user.apellido : '') : '';
-  renderArchetypeCard(archetype, fullName);
-
   // Initialize AI coach prompt
   initCoachSection(sc, ans, user);
 
@@ -2902,15 +2805,15 @@ async function init(){
       const aiSections = [
         ['intro','ai-intro',null],
         ['intro-suggestions','ai-intro-suggestions',null],
-        ['personality','ai-personality','actions-personality'],
-        ['motor','ai-motor','actions-motor'],
-        ['brakes','ai-brakes','actions-brakes'],
-        ['decisions','ai-decisions','actions-decisions'],
-        ['leadership','ai-leadership','actions-leadership'],
-        ['genius','ai-genius','actions-genius'],
-        ['values-gap','ai-values-gap','actions-values-gap'],
-        ['roles','ai-roles','actions-roles'],
-        ['synthesis','ai-synthesis','actions-30days'],
+        ['personality','ai-personality',null],
+        ['motor','ai-motor',null],
+        ['brakes','ai-brakes',null],
+        ['decisions','ai-decisions',null],
+        ['leadership','ai-leadership',null],
+        ['genius','ai-genius',null],
+        ['values-gap','ai-values-gap',null],
+        ['roles','ai-roles',null],
+        ['synthesis','ai-synthesis',null],
       ];
       _generationInProgress = true;
       // Disable PDF buttons while generating
@@ -2961,302 +2864,6 @@ async function init(){
 }
 
 
-
-// ════════════════════════════════════════════════════
-// ARCHETYPE CARD RENDERER
-// ════════════════════════════════════════════════════
-
-const ARCHETYPE_VISUALS = {
-  arquitecto: {
-    bg: '#060612',
-    accent: '#a78bfa',
-    accentDim: 'rgba(167,139,250,0.3)',
-    accentBg: 'rgba(167,139,250,0.08)',
-    gradient: 'linear-gradient(135deg,#a78bfa 0%,#818cf8 40%,#38bdf8 100%)',
-    shareColor: '#a78bfa',
-    fx: () => `
-      <div style="position:absolute;inset:0;overflow:hidden">
-        <div style="position:absolute;width:600px;height:600px;top:-200px;left:-100px;background:radial-gradient(ellipse,rgba(99,102,241,0.35) 0%,transparent 65%);animation:archDrift1 8s ease-in-out infinite alternate"></div>
-        <div style="position:absolute;width:500px;height:500px;top:-100px;right:-150px;background:radial-gradient(ellipse,rgba(139,92,246,0.25) 0%,transparent 65%);animation:archDrift2 10s ease-in-out infinite alternate"></div>
-        <div style="position:absolute;width:400px;height:300px;bottom:-50px;left:50px;background:radial-gradient(ellipse,rgba(59,130,246,0.2) 0%,transparent 65%);animation:archDrift3 7s ease-in-out infinite alternate"></div>
-        <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:40px 40px"></div>
-      </div>`,
-    symbol: () => `<svg width="80" height="80" viewBox="0 0 110 110" fill="none">
-      <defs>
-        <linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#38bdf8"/></linearGradient>
-        <filter id="agl"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-      </defs>
-      <polygon points="55,8 95,30 95,75 55,97 15,75 15,30" stroke="url(#ag)" stroke-width="1.2" fill="none" opacity="0.4"/>
-      <polygon points="55,22 82,38 82,68 55,84 28,68 28,38" stroke="url(#ag)" stroke-width="0.8" fill="rgba(139,92,246,0.1)" opacity="0.6"/>
-      <polygon points="55,36 70,55 55,72 40,55" fill="url(#ag)" opacity="0.9" filter="url(#agl)"/>
-      <line x1="55" y1="8" x2="55" y2="36" stroke="url(#ag)" stroke-width="1" opacity="0.5"/>
-      <line x1="55" y1="72" x2="55" y2="97" stroke="url(#ag)" stroke-width="1" opacity="0.5"/>
-      <circle cx="55" cy="8" r="2.5" fill="#a78bfa" opacity="0.8"/>
-      <circle cx="55" cy="97" r="2.5" fill="#38bdf8" opacity="0.8"/>
-      <circle cx="55" cy="55" r="5" fill="white" opacity="0.9" filter="url(#agl)"/>
-    </svg>`
-  },
-
-  constructor: {
-    bg: '#060b09',
-    accent: '#34d399',
-    accentDim: 'rgba(52,211,153,0.3)',
-    accentBg: 'rgba(52,211,153,0.07)',
-    gradient: 'linear-gradient(135deg,#34d399 0%,#10b981 100%)',
-    shareColor: '#34d399',
-    fx: () => `
-      <div style="position:absolute;inset:0;overflow:hidden">
-        <div style="position:absolute;width:400px;height:400px;bottom:-150px;right:-100px;background:radial-gradient(ellipse,rgba(52,211,153,0.12) 0%,transparent 65%)"></div>
-        <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(52,211,153,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(52,211,153,0.03) 1px,transparent 1px);background-size:28px 28px"></div>
-        <div style="position:absolute;width:200%;height:2px;background:linear-gradient(90deg,transparent,rgba(52,211,153,0.6),transparent);top:38%;left:-50%;transform:rotate(-22deg);animation:archSweep 6s ease-in-out infinite"></div>
-      </div>`,
-    symbol: () => `<svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-      <defs><linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#34d399"/><stop offset="100%" stop-color="#10b981"/></linearGradient>
-      <filter id="cgl"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-      <circle cx="32" cy="32" r="28" stroke="rgba(52,211,153,0.15)" stroke-width="1"/>
-      <circle cx="32" cy="32" r="20" stroke="rgba(52,211,153,0.25)" stroke-width="1"/>
-      <circle cx="32" cy="32" r="12" stroke="rgba(52,211,153,0.45)" stroke-width="1.2"/>
-      <line x1="32" y1="4" x2="32" y2="20" stroke="url(#cg)" stroke-width="1.5" opacity="0.7"/>
-      <line x1="32" y1="44" x2="32" y2="60" stroke="url(#cg)" stroke-width="1.5" opacity="0.7"/>
-      <line x1="4" y1="32" x2="20" y2="32" stroke="url(#cg)" stroke-width="1.5" opacity="0.7"/>
-      <line x1="44" y1="32" x2="60" y2="32" stroke="url(#cg)" stroke-width="1.5" opacity="0.7"/>
-      <circle cx="32" cy="32" r="5" fill="url(#cg)" filter="url(#cgl)"/>
-      <circle cx="32" cy="32" r="2.5" fill="white" opacity="0.9"/>
-    </svg>`
-  },
-
-  estratega: {
-    bg: '#0a0800',
-    accent: '#f59e0b',
-    accentDim: 'rgba(245,158,11,0.3)',
-    accentBg: 'rgba(245,158,11,0.07)',
-    gradient: 'linear-gradient(135deg,#f59e0b 0%,#ef4444 100%)',
-    shareColor: '#f59e0b',
-    fx: () => `
-      <div style="position:absolute;inset:0;overflow:hidden">
-        <div style="position:absolute;width:500px;height:500px;top:-150px;right:-100px;background:radial-gradient(ellipse,rgba(245,158,11,0.12) 0%,transparent 65%)"></div>
-        <div style="position:absolute;width:300px;height:300px;bottom:-80px;left:-50px;background:radial-gradient(ellipse,rgba(239,68,68,0.08) 0%,transparent 65%)"></div>
-        <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(245,158,11,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(245,158,11,0.04) 1px,transparent 1px);background-size:36px 36px"></div>
-      </div>`,
-    symbol: () => `<svg width="72" height="72" viewBox="0 0 72 72" fill="none">
-      <defs><linearGradient id="eg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#ef4444"/></linearGradient>
-      <filter id="egl"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-      <rect x="8" y="8" width="56" height="56" rx="4" stroke="url(#eg)" stroke-width="1" fill="none" opacity="0.3"/>
-      <rect x="18" y="18" width="36" height="36" rx="2" stroke="url(#eg)" stroke-width="1" fill="none" opacity="0.5"/>
-      <line x1="8" y1="36" x2="28" y2="36" stroke="url(#eg)" stroke-width="1" opacity="0.5"/>
-      <line x1="44" y1="36" x2="64" y2="36" stroke="url(#eg)" stroke-width="1" opacity="0.5"/>
-      <line x1="36" y1="8" x2="36" y2="28" stroke="url(#eg)" stroke-width="1" opacity="0.5"/>
-      <line x1="36" y1="44" x2="36" y2="64" stroke="url(#eg)" stroke-width="1" opacity="0.5"/>
-      <polygon points="36,26 46,46 26,46" fill="url(#eg)" opacity="0.9" filter="url(#egl)"/>
-      <circle cx="36" cy="36" r="3" fill="white" opacity="0.9"/>
-    </svg>`
-  },
-
-  lider: {
-    bg: '#0d0608',
-    accent: '#f43f5e',
-    accentDim: 'rgba(244,63,94,0.3)',
-    accentBg: 'rgba(244,63,94,0.07)',
-    gradient: 'linear-gradient(135deg,#f43f5e 0%,#ec4899 100%)',
-    shareColor: '#f43f5e',
-    fx: () => `
-      <div style="position:absolute;inset:0;overflow:hidden">
-        <div style="position:absolute;width:500px;height:500px;top:-180px;left:-100px;background:radial-gradient(ellipse,rgba(244,63,94,0.2) 0%,transparent 65%);animation:archDrift1 9s ease-in-out infinite alternate"></div>
-        <div style="position:absolute;width:400px;height:400px;bottom:-100px;right:-80px;background:radial-gradient(ellipse,rgba(236,72,153,0.15) 0%,transparent 65%);animation:archDrift2 11s ease-in-out infinite alternate"></div>
-        <div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(244,63,94,0.06) 1px,transparent 1px);background-size:24px 24px"></div>
-      </div>`,
-    symbol: () => `<svg width="72" height="72" viewBox="0 0 72 72" fill="none">
-      <defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f43f5e"/><stop offset="100%" stop-color="#ec4899"/></linearGradient>
-      <filter id="lgl"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-      <circle cx="36" cy="22" r="10" stroke="url(#lg)" stroke-width="1.5" fill="rgba(244,63,94,0.1)"/>
-      <path d="M14 58 C14 44 58 44 58 58" stroke="url(#lg)" stroke-width="1.5" fill="none"/>
-      <circle cx="18" cy="42" r="6" stroke="url(#lg)" stroke-width="1" fill="none" opacity="0.5"/>
-      <circle cx="54" cy="42" r="6" stroke="url(#lg)" stroke-width="1" fill="none" opacity="0.5"/>
-      <line x1="26" y1="28" x2="18" y2="38" stroke="url(#lg)" stroke-width="1" opacity="0.4"/>
-      <line x1="46" y1="28" x2="54" y2="38" stroke="url(#lg)" stroke-width="1" opacity="0.4"/>
-      <circle cx="36" cy="22" r="4" fill="url(#lg)" filter="url(#lgl)"/>
-    </svg>`
-  },
-
-  pionero: {
-    bg: '#0b0800',
-    accent: '#fb923c',
-    accentDim: 'rgba(251,146,60,0.3)',
-    accentBg: 'rgba(251,146,60,0.07)',
-    gradient: 'linear-gradient(135deg,#fb923c 0%,#fbbf24 100%)',
-    shareColor: '#fb923c',
-    fx: () => `
-      <div style="position:absolute;inset:0;overflow:hidden">
-        <div style="position:absolute;width:600px;height:300px;top:-50px;left:-100px;background:radial-gradient(ellipse,rgba(251,146,60,0.15) 0%,transparent 65%);animation:archDrift1 7s ease-in-out infinite alternate"></div>
-        <div style="position:absolute;width:400px;height:400px;bottom:-100px;right:-50px;background:radial-gradient(ellipse,rgba(251,191,36,0.1) 0%,transparent 65%);animation:archDrift3 9s ease-in-out infinite alternate"></div>
-        <div style="position:absolute;inset:0;background-image:linear-gradient(45deg,rgba(251,146,60,0.03) 1px,transparent 1px),linear-gradient(-45deg,rgba(251,146,60,0.03) 1px,transparent 1px);background-size:30px 30px"></div>
-      </div>`,
-    symbol: () => `<svg width="72" height="72" viewBox="0 0 72 72" fill="none">
-      <defs><linearGradient id="pg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#fb923c"/><stop offset="100%" stop-color="#fbbf24"/></linearGradient>
-      <filter id="pgl"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-      <path d="M36 8 L44 28 L64 28 L48 42 L54 62 L36 50 L18 62 L24 42 L8 28 L28 28 Z" stroke="url(#pg)" stroke-width="1.5" fill="rgba(251,146,60,0.08)" opacity="0.8"/>
-      <path d="M36 18 L41 30 L54 30 L44 38 L48 50 L36 42 L24 50 L28 38 L18 30 L31 30 Z" fill="url(#pg)" opacity="0.7" filter="url(#pgl)"/>
-      <circle cx="36" cy="36" r="5" fill="white" opacity="0.9" filter="url(#pgl)"/>
-    </svg>`
-  },
-
-  conector: {
-    bg: '#040d0c',
-    accent: '#2dd4bf',
-    accentDim: 'rgba(45,212,191,0.3)',
-    accentBg: 'rgba(45,212,191,0.07)',
-    gradient: 'linear-gradient(135deg,#2dd4bf 0%,#06b6d4 100%)',
-    shareColor: '#2dd4bf',
-    fx: () => `
-      <div style="position:absolute;inset:0;overflow:hidden">
-        <div style="position:absolute;width:500px;height:500px;top:-100px;left:-100px;background:radial-gradient(ellipse,rgba(45,212,191,0.1) 0%,transparent 65%);animation:archDrift2 10s ease-in-out infinite alternate"></div>
-        <div style="position:absolute;width:400px;height:400px;bottom:-120px;right:-80px;background:radial-gradient(ellipse,rgba(6,182,212,0.1) 0%,transparent 65%);animation:archDrift1 8s ease-in-out infinite alternate"></div>
-        <div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(45,212,191,0.08) 1px,transparent 1px);background-size:32px 32px"></div>
-      </div>`,
-    symbol: () => `<svg width="72" height="72" viewBox="0 0 72 72" fill="none">
-      <defs><linearGradient id="cng" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2dd4bf"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient>
-      <filter id="cngl"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-      <circle cx="36" cy="36" r="6" fill="url(#cng)" filter="url(#cngl)"/>
-      <circle cx="14" cy="20" r="5" stroke="url(#cng)" stroke-width="1.5" fill="rgba(45,212,191,0.1)"/>
-      <circle cx="58" cy="20" r="5" stroke="url(#cng)" stroke-width="1.5" fill="rgba(45,212,191,0.1)"/>
-      <circle cx="14" cy="52" r="5" stroke="url(#cng)" stroke-width="1.5" fill="rgba(45,212,191,0.1)"/>
-      <circle cx="58" cy="52" r="5" stroke="url(#cng)" stroke-width="1.5" fill="rgba(45,212,191,0.1)"/>
-      <circle cx="36" cy="10" r="4" stroke="url(#cng)" stroke-width="1.2" fill="rgba(45,212,191,0.1)"/>
-      <circle cx="36" cy="62" r="4" stroke="url(#cng)" stroke-width="1.2" fill="rgba(45,212,191,0.1)"/>
-      <line x1="19" y1="22" x2="31" y2="32" stroke="url(#cng)" stroke-width="1" opacity="0.5"/>
-      <line x1="53" y1="22" x2="41" y2="32" stroke="url(#cng)" stroke-width="1" opacity="0.5"/>
-      <line x1="19" y1="50" x2="31" y2="40" stroke="url(#cng)" stroke-width="1" opacity="0.5"/>
-      <line x1="53" y1="50" x2="41" y2="40" stroke="url(#cng)" stroke-width="1" opacity="0.5"/>
-      <line x1="36" y1="14" x2="36" y2="30" stroke="url(#cng)" stroke-width="1" opacity="0.5"/>
-      <line x1="36" y1="42" x2="36" y2="58" stroke="url(#cng)" stroke-width="1" opacity="0.5"/>
-    </svg>`
-  },
-
-  operador: {
-    bg: '#060b09',
-    accent: '#4ade80',
-    accentDim: 'rgba(74,222,128,0.3)',
-    accentBg: 'rgba(74,222,128,0.07)',
-    gradient: 'linear-gradient(135deg,#4ade80 0%,#22c55e 100%)',
-    shareColor: '#4ade80',
-    fx: () => `
-      <div style="position:absolute;inset:0;overflow:hidden">
-        <div style="position:absolute;width:400px;height:400px;bottom:-150px;right:-100px;background:radial-gradient(ellipse,rgba(74,222,128,0.12) 0%,transparent 65%)"></div>
-        <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(74,222,128,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(74,222,128,0.035) 1px,transparent 1px);background-size:24px 24px"></div>
-        <div style="position:absolute;width:200%;height:2px;background:linear-gradient(90deg,transparent,rgba(74,222,128,0.5),transparent);top:40%;left:-50%;transform:rotate(-18deg);animation:archSweep 7s ease-in-out infinite"></div>
-      </div>`,
-    symbol: () => `<svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-      <defs><linearGradient id="og" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4ade80"/><stop offset="100%" stop-color="#22c55e"/></linearGradient>
-      <filter id="ogl"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-      <rect x="10" y="28" width="44" height="8" rx="2" stroke="url(#og)" stroke-width="1.2" fill="rgba(74,222,128,0.08)"/>
-      <rect x="18" y="20" width="28" height="6" rx="1.5" stroke="url(#og)" stroke-width="1" fill="none" opacity="0.5"/>
-      <rect x="18" y="38" width="28" height="6" rx="1.5" stroke="url(#og)" stroke-width="1" fill="none" opacity="0.5"/>
-      <rect x="24" y="13" width="16" height="5" rx="1" stroke="url(#og)" stroke-width="1" fill="none" opacity="0.3"/>
-      <rect x="24" y="46" width="16" height="5" rx="1" stroke="url(#og)" stroke-width="1" fill="none" opacity="0.3"/>
-      <circle cx="32" cy="32" r="5" fill="url(#og)" filter="url(#ogl)"/>
-      <circle cx="32" cy="32" r="2" fill="white" opacity="0.9"/>
-    </svg>`
-  },
-
-  catalizador: {
-    bg: '#080608',
-    accent: '#e879f9',
-    accentDim: 'rgba(232,121,249,0.3)',
-    accentBg: 'rgba(232,121,249,0.07)',
-    gradient: 'linear-gradient(135deg,#f43f5e 0%,#a855f7 35%,#3b82f6 65%,#2dd4bf 100%)',
-    shareColor: '#a855f7',
-    fx: () => `
-      <div style="position:absolute;inset:0;overflow:hidden">
-        <div style="position:absolute;width:500px;height:500px;top:-150px;left:-100px;background:radial-gradient(ellipse,rgba(168,85,247,0.2) 0%,transparent 60%);animation:archDrift1 8s ease-in-out infinite alternate"></div>
-        <div style="position:absolute;width:400px;height:400px;bottom:-100px;right:-80px;background:radial-gradient(ellipse,rgba(59,130,246,0.15) 0%,transparent 60%);animation:archDrift2 11s ease-in-out infinite alternate"></div>
-        <div style="position:absolute;width:300px;height:300px;top:30%;left:30%;background:radial-gradient(ellipse,rgba(45,212,191,0.1) 0%,transparent 60%);animation:archDrift3 9s ease-in-out infinite alternate"></div>
-        <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:36px 36px"></div>
-      </div>`,
-    symbol: () => `<svg width="72" height="72" viewBox="0 0 72 72" fill="none">
-      <defs>
-        <linearGradient id="ktg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f43f5e"/><stop offset="50%" stop-color="#a855f7"/><stop offset="100%" stop-color="#2dd4bf"/></linearGradient>
-        <filter id="ktgl"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-      </defs>
-      <polygon points="36,6 66,54 6,54" stroke="url(#ktg)" stroke-width="1.5" fill="none" opacity="0.5"/>
-      <polygon points="36,18 57,54 15,54" stroke="url(#ktg)" stroke-width="1" fill="rgba(168,85,247,0.06)" opacity="0.6"/>
-      <line x1="36" y1="6" x2="36" y2="54" stroke="url(#ktg)" stroke-width="0.8" opacity="0.3"/>
-      <line x1="6" y1="54" x2="66" y2="54" stroke="url(#ktg)" stroke-width="0.8" opacity="0.3"/>
-      <line x1="21" y1="30" x2="51" y2="30" stroke="url(#ktg)" stroke-width="0.8" opacity="0.3"/>
-      <circle cx="36" cy="36" r="7" fill="url(#ktg)" filter="url(#ktgl)" opacity="0.9"/>
-      <circle cx="36" cy="36" r="3" fill="white" opacity="0.9"/>
-      <circle cx="36" cy="6" r="2.5" fill="#f43f5e" opacity="0.8"/>
-      <circle cx="6" cy="54" r="2.5" fill="#a855f7" opacity="0.8"/>
-      <circle cx="66" cy="54" r="2.5" fill="#2dd4bf" opacity="0.8"/>
-    </svg>`
-  }
-};
-
-// Keyframe animations injected once
-(function injectArchetypeAnimations(){
-  if(document.getElementById('arch-keyframes')) return;
-  const s = document.createElement('style');
-  s.id = 'arch-keyframes';
-  s.textContent = `
-    @keyframes archDrift1{from{transform:translate(0,0) rotate(0deg)}to{transform:translate(30px,20px) rotate(8deg)}}
-    @keyframes archDrift2{from{transform:translate(0,0) rotate(0deg)}to{transform:translate(-20px,30px) rotate(-6deg)}}
-    @keyframes archDrift3{from{transform:translate(0,0)}to{transform:translate(20px,-15px)}}
-    @keyframes archSweep{0%{opacity:0;transform:rotate(-22deg) translateX(-10%)}20%{opacity:1}80%{opacity:1}100%{opacity:0;transform:rotate(-22deg) translateX(10%)}}
-  `;
-  document.head.appendChild(s);
-})();
-
-function renderArchetypeCard(archetype, userName){
-  const v = ARCHETYPE_VISUALS[archetype.palette] || ARCHETYPE_VISUALS.catalizador;
-  const card = document.getElementById('arch-card');
-  if(!card) return;
-
-  // Set CSS variables
-  card.style.setProperty('--arch-accent', v.accent);
-  card.style.setProperty('--arch-accent-dim', v.accentDim);
-  card.style.setProperty('--arch-accent-bg', v.accentBg);
-  card.style.setProperty('--arch-gradient', v.gradient);
-
-  // Background
-  document.getElementById('arch-bg').style.background = v.bg;
-
-  // FX layer
-  document.getElementById('arch-fx').innerHTML = v.fx();
-
-  // Badge
-  document.getElementById('arch-badge').textContent = archetype.name.split(' ').slice(-1)[0];
-
-  // Symbol
-  document.getElementById('arch-symbol').innerHTML = v.symbol();
-
-  // Name
-  document.getElementById('arch-name').textContent = archetype.name;
-
-  // Phrase
-  document.getElementById('arch-phrase').textContent = archetype.phrase;
-
-  // Personal text
-  const firstName = userName ? userName.split(' ')[0] : '';
-  const personalEl = document.getElementById('arch-personal');
-  if(firstName){
-    personalEl.innerHTML = `<strong>${firstName}</strong>, ${archetype.desc}`;
-  } else {
-    personalEl.textContent = archetype.desc;
-  }
-
-  // Traits
-  const traitsEl = document.getElementById('arch-traits');
-  traitsEl.innerHTML = (archetype.traits || []).map(t => `<span class="arch-trait">${t}</span>`).join('');
-
-  // Share button color
-  const shareBtn = document.getElementById('arch-share-btn');
-  if(shareBtn){
-    shareBtn.style.background = v.accent;
-    shareBtn.style.color = '#000';
-  }
-
-  // Year
-  document.getElementById('arch-year').textContent = new Date().getFullYear();
-}
 
 async function downloadArchetypeCard(){
   // Use html2canvas if available, otherwise prompt user to screenshot

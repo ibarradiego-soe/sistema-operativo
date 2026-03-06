@@ -251,7 +251,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
   </div>
   <div class="nav-actions">
     <button class="nav-btn" onclick="downloadPDF.call(this, event)">⬇ Descargar PDF</button>
-    <button class="nav-btn primary" onclick="scrollToEmail()">✉ Enviar a mi correo</button>
+    
   </div>
 </nav>
 
@@ -289,7 +289,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
 
   <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
     <button class="pdf-btn" onclick="downloadPDF.call(this, event)">⬇ Descargar PDF</button>
-    <button class="pdf-btn" style="border-color:rgba(59,130,246,0.3);color:var(--blue2)" onclick="scrollToEmail()">✉ Enviar a mi correo</button>
+    
   </div>
 </div>
 
@@ -840,22 +840,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
   </div>
 </div>
 
-<!-- EMAIL CAPTURE -->
-<div class="email-section fade-in" id="email-section">
-  <h3>Guarda tu reporte</h3>
-  <p>Recibe este reporte completo en tu correo. Lo tendrás disponible para revisarlo cuando quieras — sin necesidad de hacer el test de nuevo.</p>
-  <div id="email-form-wrap">
-    <div class="email-form">
-      <input type="email" class="email-input" id="email-input" placeholder="tu@email.com">
-      <button class="btn-send" onclick="sendReport()">Enviar →</button>
-    </div>
-    <div class="email-note">Te enviamos el enlace a tu reporte. Sin spam, sin newsletters.</div>
-  </div>
-  <div class="email-success" id="email-success">
-    <div class="check">✅</div>
-    <p>Perfecto. En unos minutos recibirás el enlace a tu reporte en tu correo.</p>
-  </div>
-</div>
+<!-- Email sent automatically on report completion -->
 
 <div class="report-footer">
   <p>Sistema Operativo del Emprendedor<br>
@@ -2485,6 +2470,25 @@ function scrollToEmail(){
 async function downloadPDF(event){
   const btn = this || event?.currentTarget || document.querySelector('[onclick*="downloadPDF"]');
   const originalText = btn ? btn.innerHTML : '';
+
+  // Check if AI generation is still in progress
+  if(window._generationInProgress){
+    alert('El análisis todavía se está generando. Espera a que termine antes de descargar el PDF.');
+    return;
+  }
+
+  // Check if any AI blocks are still empty
+  const aiBlocks = ['ai-intro','ai-intro-suggestions','ai-personality','ai-motivation','ai-brakes','ai-decision','ai-leadership','ai-genius','ai-values-gap','ai-roles','ai-synthesis'];
+  const emptyBlocks = aiBlocks.filter(id => {
+    const el = document.getElementById(id);
+    return el && el.textContent.trim().length < 20;
+  });
+
+  if(emptyBlocks.length > 0){
+    alert('Algunos bloques del análisis aún no han terminado de generarse. Espera unos momentos e intenta de nuevo.');
+    return;
+  }
+
   if(btn){ btn.innerHTML = '⏳ Generando PDF...'; btn.disabled = true; }
 
   // Load jsPDF
@@ -2907,11 +2911,47 @@ async function init(){
         ['synthesis','ai-synthesis','actions-30days'],
       ];
       _generationInProgress = true;
+      // Disable PDF buttons while generating
+      document.querySelectorAll('[onclick*="downloadPDF"]').forEach(b => {
+        b.disabled = true;
+        b.title = 'Espera a que termine el análisis';
+        b.style.opacity = '0.4';
+        b.style.cursor = 'not-allowed';
+      });
+
       for (const [sid, tid, aid] of aiSections) {
         await generateAISection(sid, tid, aid, sc, ans);
         await new Promise(r => setTimeout(r, 1500)); // delay to avoid concurrent rate limit
       }
       _generationInProgress = false;
+
+      // Enable PDF buttons
+      document.querySelectorAll('[onclick*="downloadPDF"]').forEach(b => {
+        b.disabled = false;
+        b.title = '';
+        b.style.opacity = '';
+        b.style.cursor = '';
+      });
+
+      // Auto-send report email if user has email
+      try {
+        const _user = getUser();
+        if(_user && _user.correo){
+          const _name = [_user.nombre, _user.apellido].filter(Boolean).join(' ') || 'Emprendedor';
+          fetch('/api/send-report', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: _user.correo,
+              name: _name,
+              reportUrl: window.location.href
+            })
+          }).then(r => r.json()).then(d => {
+            if(d.success) console.log('Report email sent to', _user.correo);
+          }).catch(e => console.warn('Email send failed:', e));
+        }
+      } catch(e) { console.warn('Auto-email error:', e); }
+
       // Clear saved cache once fully complete (fresh generation next time)
       try { localStorage.removeItem('soe_report'); } catch(e) {}
     }

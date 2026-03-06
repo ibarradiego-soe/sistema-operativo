@@ -259,7 +259,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
     </div>
 
     <div class="reg-field">
-      <label class="reg-label">Correo electrónico</label>
+      <label class="reg-label">Correo electrónico <span style="font-size:11px;color:var(--muted);font-weight:400">— aquí recibirás tu reporte</span></label>
       <input class="reg-input" id="reg-email" type="email" placeholder="tu@correo.com" autocomplete="email">
     </div>
 
@@ -321,7 +321,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
   </div>
   <div class="q-nav">
     <div class="nav-arrows">
-      <button class="arrow-btn" id="btn-prev" onclick="prevQ()">↑</button>
+      <button class="arrow-btn" id="btn-prev" onclick="prevQ()">←</button>
     </div>
     <button class="btn-next" id="btn-next" onclick="nextQ(false)">Siguiente →</button>
   </div>
@@ -794,7 +794,7 @@ const SECS = [
  desc:"El estado de ánimo y la energía no son solo variables de bienestar — son el combustible que permite o limita todo lo demás. Este bloque mide cómo has estado realmente en las últimas semanas.",
  time:"~2 min",
  instr:"En las últimas dos semanas, ¿con qué frecuencia te han afectado los siguientes estados? Responde con honestidad — nadie más ve estas respuestas.",
- scale:"phq",labels:["Ningún día","Varios días","Más de la mitad","Casi todos los días"],
+ scale:"phq",labels:["Ningún día","Algunos días","Más de la mitad","Casi todos los días"],
  insight:{icon:"🌡️",tag:"Sección 20 completada",
   head:"Tu estado emocional es parte de tu sistema operativo — no es separable de cómo funciona el resto.",
   body:"Los patrones de energía, ánimo y motivación que has reportado van a cruzarse con tu perfil de personalidad para explicar comportamientos que de otra forma parecerían contradictorios.",
@@ -816,7 +816,7 @@ const SECS = [
  desc:"La activación del sistema nervioso — tensión, preocupación, hipervigilancia — no es debilidad. Es información sobre cómo tu mente procesa la incertidumbre. Define cuánta energía cognitiva gastas en anticipar lo que podría salir mal.",
  time:"~2 min",
  instr:"En las últimas dos semanas, ¿con qué frecuencia te han afectado los siguientes estados?",
- scale:"phq",labels:["Ningún día","Varios días","Más de la mitad","Casi todos los días"],
+ scale:"phq",labels:["Ningún día","Algunos días","Más de la mitad","Casi todos los días"],
  insight:{icon:"🌊",tag:"Sección 21 completada",
   head:"La activación crónica no es debilidad — es el sistema nervioso haciendo su trabajo sin switch de apagado.",
   body:"El nivel de activación que has reportado va a cruzarse con tu neuroticismo, tu autocontrol y tu estilo de decisión para revelar cuánta energía cognitiva estás gastando en anticipar amenazas — y qué te queda para ejecutar.",
@@ -964,7 +964,7 @@ function buildLikert(el,n,key,cur,labels){
   const L=labels||['','',''];
   // For 4-point scales: only show start and end to avoid repeated labels
   // For 5+ point scales: show start, middle, end
-  if(n<=4){
+  if(n<=4 || L.length<=2){
     lbl.innerHTML=`<span>${L[0]}</span><span></span><span>${L[L.length-1]}</span>`;
   } else {
     const mid=`<span>${L[1]||''}</span>`;
@@ -1063,11 +1063,42 @@ function startProc(){
     const d=last.querySelector('.pdot');
     d.classList.remove('spin'); d.classList.add('ok'); d.textContent='✓';
     setTimeout(()=>{
+      // Build report URL and send email
+      const _user = ST.user || {};
+      const _email = _user.correo || '';
+      const _firstName = _user.nombre || 'Emprendedor';
+
+      // Encode answers as compact string: "1:2,3:4,..." only non-zero values
+      function encodeAnswers(ans){
+        return Object.entries(ans)
+          .filter(([k,v]) => v > 0)
+          .map(([k,v]) => k + ':' + v)
+          .join(',');
+      }
+
+      const _encoded = encodeAnswers(ST.ans);
+      const _userEncoded = encodeURIComponent(JSON.stringify(_user));
+      const _reportUrl = window.location.origin + '/report?e=' + encodeURIComponent(_encoded) + '&u=' + _userEncoded;
+
+      // Show completion screen
       document.getElementById('proc-wrap').innerHTML=`
         <div style="font-size:52px;margin-bottom:24px">✅</div>
-        <h2 class="proc-h">Tu análisis está listo</h2>
-        <p class="proc-sub">Hemos procesado tus 22 dimensiones y generado tu perfil completo como persona y emprendedor.</p>
-        <button class="btn-start" style="margin-top:20px" onclick="goReport()">Ver mi análisis →</button>`;
+        <h2 class="proc-h">¡Listo, ${_firstName}!</h2>
+        <p class="proc-sub">Tu reporte está siendo generado en este momento. En unos minutos llegará a <strong style="color:#fff">${_email}</strong> con el link para verlo completo.</p>
+        <p style="font-size:13px;color:rgba(255,255,255,0.35);margin-top:16px;line-height:1.6">Revisa tu bandeja de entrada y también la carpeta de spam por si acaso.</p>`;
+
+      // Send report email in background
+      if(_email){
+        fetch('/api/send-report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: _email,
+            name: [_user.nombre, _user.apellido].filter(Boolean).join(' ') || 'Emprendedor',
+            reportUrl: _reportUrl
+          })
+        }).catch(e => console.warn('Email send failed:', e));
+      }
     },700);
   },8000);
 }

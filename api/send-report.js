@@ -45,7 +45,7 @@ export default async function handler(req, res) {
                 Hola, ${firstName}.
               </p>
               <p style="margin:0 0 28px 0;font-size:15px;color:rgba(255,255,255,0.5);line-height:1.6;">
-                Tu análisis psicológico está listo. 22 dimensiones cruzadas, 9 bloques de análisis profundo — todo personalizado para ti.
+                Tu análisis psicológico ha sido generado. Guarda este correo — contiene el link a tu reporte completo para que puedas volver a él cuando quieras.
               </p>
 
               <!-- Divider -->
@@ -156,7 +156,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         from: 'Sistema Operativo <onboarding@resend.dev>',
         to: [email],
-        subject: `${firstName}, tu Sistema Operativo está aquí`,
+        subject: `${firstName}, tu reporte está listo`,
         html
       })
     });

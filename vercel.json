@@ -4,6 +4,9 @@
     { "src": "/", "dest": "/landing.html" },
     { "src": "/test", "dest": "/test.html" },
     { "src": "/report", "dest": "/report.html" },
+    { "src": "/privacy", "dest": "/privacy.html" },
+    { "src": "/terms", "dest": "/terms.html" },
+    { "src": "/contact", "dest": "/contact.html" },
     { "src": "/api/(.*)", "dest": "/api/$1" }
   ]
 }

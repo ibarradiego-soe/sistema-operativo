@@ -665,30 +665,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
 ══════════════════════════════ -->
 <div class="report-section fade-in" id="block-synthesis">
   <div class="section-header">
-    <div class="section-eyebrow">Bloque 9 — Síntesis final</div>
-    <h2 class="section-title">Tu <em>Sistema Operativo</em> completo</h2>
-    <p class="section-desc">El cruce de las 22 dimensiones — lo que ningún test aislado puede darte.</p>
+    <div class="section-eyebrow">Bloque 9 — Tu Sistema Operativo Completo</div>
+    <h2 class="section-title">El blueprint de <em>cómo funcionas</em></h2>
+    <p class="section-desc">Todo el análisis cruzado en un solo documento — para entenderte, actuar diferente y compartirlo con quienes trabajan contigo.</p>
   </div>
 
-  <div class="card" style="margin-bottom:12px">
-    <div class="profile-card" id="synthesis-profile">
-      <div class="profile-type-label">Tu perfil como emprendedor</div>
-      <div class="profile-type-name" id="synthesis-archetype">—</div>
-      <div class="profile-type-desc" id="synthesis-desc"></div>
+  <!-- Loading state — hidden once generated -->
+  <div id="ai-synthesis" class="card" style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px">
+      <div style="width:16px;height:16px;border-radius:50%;border:2px solid var(--muted2);border-top-color:var(--blue);animation:spin 1s linear infinite"></div>
+      Generando tu sistema operativo completo...
     </div>
   </div>
 
-  <div class="card" style="margin-bottom:12px">
-    <div class="card-label" style="margin-bottom:16px">Síntesis — Tu sistema operativo completo</div>
-    <div class="ai-block" id="ai-synthesis">
-      <div style="display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px">
-        <div style="width:16px;height:16px;border-radius:50%;border:2px solid var(--muted2);border-top-color:var(--blue);animation:spin 1s linear infinite"></div>
-        Generando síntesis final...
-      </div>
-    </div>
-  </div>
+  <!-- Rendered sections — populated by renderSynthesis() -->
+  <div id="synthesis-sections" style="display:none;flex-direction:column;gap:16px"></div>
 
-  
 </div>
 
 
@@ -1808,10 +1800,67 @@ function buildLocale(code){
 // ════════════════════════════════════════════════════
 // AI GENERATION
 // ════════════════════════════════════════════════════
-async function generateAISection(sectionId, targetId, actionsId, sc, ans){
+
+// ════════════════════════════════════════════════════
+// SYNTHESIS RENDERER — 10 sections
+// ════════════════════════════════════════════════════
+function renderSynthesis(parsed){
+  const container = document.getElementById('synthesis-sections');
+  const aiEl      = document.getElementById('ai-synthesis');
+  if(!container || !parsed) return;
+
+  const sections = [
+    { key: 'lo_que_destaco',       icon: '✦', title: 'Lo que destacó en tu perfil',                  color: 'var(--blue2)' },
+    { key: 'de_un_vistazo',        icon: '👁', title: 'Tú de un vistazo',                            color: 'var(--teal)' },
+    { key: 'quien_eres',           icon: '🧠', title: 'Quién eres realmente',                        color: 'var(--purple)' },
+    { key: 'ventaja_natural',      icon: '⚡', title: 'Tu ventaja natural',                          color: 'var(--green)' },
+    { key: 'lo_que_frena',         icon: '🛑', title: 'Lo que te frena',                             color: 'var(--red)' },
+    { key: 'lo_que_necesitas',     icon: '🔑', title: 'Lo que necesitas para operar bien',           color: 'var(--amber)' },
+    { key: 'socios_colaboradores', icon: '🤝', title: 'Cómo relacionarte con socios y colaboradores', color: 'var(--teal)' },
+    { key: 'conversacion_contigo', icon: '🪞', title: 'La conversación que necesitas tener contigo mismo', color: 'var(--purple)' },
+    { key: 'como_trabajar_conmigo',icon: '📋', title: 'Cómo trabajar con esta persona',              color: 'var(--blue2)',
+      note: 'Comparte esta sección con tu equipo o socios' },
+    { key: 'blueprint',            icon: '🗺', title: 'Tu blueprint para actuar',                    color: 'var(--amber)' },
+  ];
+
+  container.innerHTML = sections.map(s => {
+    const raw = parsed[s.key] || '';
+    if(!raw) return '';
+
+    // Blueprint: numbered list
+    let bodyHtml = '';
+    if(s.key === 'blueprint'){
+      const items = raw.split('\n').map(function(x){ return x.replace(/^\d+[.)\s]+/, '').trim(); }).filter(Boolean);
+      bodyHtml = '<ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:12px">' +
+        items.map(item => `<li style="font-size:14px;color:rgba(255,255,255,0.82);line-height:1.7">${item}</li>`).join('') +
+        '</ol>';
+    } else {
+      bodyHtml = raw.split('\n').filter(Boolean).map(p =>
+        `<p style="font-size:14px;color:rgba(255,255,255,0.82);line-height:1.75;margin-bottom:12px">${p}</p>`
+      ).join('');
+    }
+
+    const noteHtml = s.note ? `<div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:${s.color};opacity:.7;margin-bottom:12px">${s.note}</div>` : '';
+
+    return `<div class="card" style="border-left:3px solid ${s.color};padding:24px 28px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <span style="font-size:20px">${s.icon}</span>
+        <span style="font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${s.color}">${s.title}</span>
+      </div>
+      ${noteHtml}
+      ${bodyHtml}
+    </div>`;
+  }).join('');
+
+  // Hide loader, show sections
+  if(aiEl) aiEl.style.display = 'none';
+  container.style.display = 'flex';
+}
+
+async function generateAISection(sectionId, targetId, actionsId, sc, ans, user){
   const sectionPrompts = {
-    intro: buildIntroPrompt(sc, ans),
-    'intro-suggestions': buildIntroSuggestionsPrompt(sc, ans),
+    intro: buildIntroPrompt(sc, ans, user),
+    'intro-suggestions': buildIntroSuggestionsPrompt(sc, ans, user),
     personality: buildPersonalityPrompt(sc),
     motor: buildMotorPrompt(sc),
     brakes: buildBrakesPrompt(sc),
@@ -1820,7 +1869,7 @@ async function generateAISection(sectionId, targetId, actionsId, sc, ans){
     genius: buildGeniusPrompt(sc),
     'values-gap': buildValuesGapPrompt(sc),
     'roles': buildRolesPrompt(sc),
-    synthesis: buildSynthesisPrompt(sc, ans)
+    synthesis: buildSynthesisPrompt(sc, ans, user)
   };
 
   const prompt = sectionPrompts[sectionId];
@@ -1864,7 +1913,7 @@ ${USER_LOCALE.country ? 'El lector vive en ' + USER_LOCALE.country + '. Adapta e
         },
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
-          max_tokens: 800,
+          max_tokens: sectionId === 'synthesis' ? 4000 : 800,
           system: sysPrompt,
           messages: [{ role: 'user', content: prompt }]
         })
@@ -1904,7 +1953,19 @@ ${USER_LOCALE.country ? 'El lector vive en ' + USER_LOCALE.country + '. Adapta e
       return;
     }
 
-    // Populate analysis
+    // Synthesis: use renderSynthesis for the 10-section layout
+    if(sectionId === 'synthesis'){
+      renderSynthesis(parsed);
+      // Save to localStorage
+      try {
+        const saved = JSON.parse(localStorage.getItem('soe_report') || '{}');
+        saved[sectionId] = JSON.stringify(parsed);
+        localStorage.setItem('soe_report', JSON.stringify(saved));
+      } catch(e) {}
+      return;
+    }
+
+    // Populate analysis (all other blocks)
     if(parsed.analysis){
       const el = document.getElementById(targetId);
       if(el) {
@@ -1942,7 +2003,18 @@ ${USER_LOCALE.country ? 'El lector vive en ' + USER_LOCALE.country + '. Adapta e
   }
 }
 
-function buildIntroPrompt(sc, ans){
+function buildContextStr(user){
+  if(!user || !user.contexto) return '';
+  const c = user.contexto;
+  let s = '';
+  if(c.momento)    s += `\nMomento emprendedor: ${c.momento}`;
+  if(c.rol)        s += `\nRol y funciones: ${c.rol}`;
+  if(c.equipo)     s += `\nTamaño del equipo: ${c.equipo}`;
+  if(c.obstaculos) s += `\nMayores obstáculos: ${c.obstaculos}`;
+  return s ? '\nCONTEXTO DEL EMPRENDEDOR:' + s : '';
+}
+
+function buildIntroPrompt(sc, ans, user){
   const archetype = computeArchetype(sc);
   const dstyle = decisionStyle(ans);
   const r3 = riasecTop3(sc);
@@ -1977,7 +2049,7 @@ REGLA: Dentro de los strings NUNCA uses comillas dobles. Usa comillas simples si
 LONGITUD: Cada párrafo máximo 4 oraciones. Total no más de 900 caracteres.`;
 }
 
-function buildIntroSuggestionsPrompt(sc, ans){
+function buildIntroSuggestionsPrompt(sc, ans, user){
   const archetype = computeArchetype(sc);
   const dstyle = decisionStyle(ans);
   const r3 = riasecTop3(sc);
@@ -1996,6 +2068,8 @@ Escribe UN párrafo fluido (no lista, no bullets) con sugerencias concretas y pe
 - Una o dos sugerencias adicionales que su perfil específico haga relevantes
 
 TONO: Primera persona dirigida a él/ella ('Te sugiero que...', 'Busca personas que...', 'Evita gastar energía en...'). Directo, específico, sin rodeos. Nada genérico — cada sugerencia debe hacer que piense 'esto es exactamente para mí'.
+
+${buildContextStr(user)}
 
 DATOS DEL PERFIL:
 Big Five: Apertura ${sc.openness}% | Responsabilidad ${sc.conscient}% | Extraversión ${sc.extraversion}% | Amabilidad ${sc.agreeable}% | Neuroticismo ${sc.neuroticism}%
@@ -2281,55 +2355,55 @@ Devuelve exactamente este JSON:
 Responde ÚNICAMENTE con el JSON. Sin texto adicional.`;
 }
 
-function buildSynthesisPrompt(sc, ans){
+function buildSynthesisPrompt(sc, ans, user){
   const archetype = computeArchetype(sc);
-  const dstyle = decisionStyle(ans);
-  const r3 = riasecTop3(sc);
-  const topValues = sc.values_raw.map((v,i)=>({label:VALUES_LABELS[i],v}))
-    .sort((a,b)=>b.v-a.v).slice(0,3).map(x=>x.label).join(', ');
+  const dstyle    = decisionStyle(ans);
+  const r3        = riasecTop3(sc);
+  const topVals   = sc.values_raw.map((v,i)=>({l:VALUES_LABELS[i],v})).sort((a,b)=>b.v-a.v).slice(0,3).map(x=>x.l).join(', ');
+  const ctxStr    = buildContextStr(user);
+  const nombre    = user && user.nombre ? user.nombre : 'el usuario';
 
-  // PHQ-9 and GAD-7 severity labels
-  const phqLabel = sc.phq9_score <= 4 ? 'mínimo' : sc.phq9_score <= 9 ? 'leve' : sc.phq9_score <= 14 ? 'moderado' : 'moderado-severo';
-  const gadLabel = sc.gad7_score <= 4 ? 'mínima' : sc.gad7_score <= 9 ? 'leve' : sc.gad7_score <= 14 ? 'moderada' : 'severa';
+  return `Eres un coach experto en psicología del emprendimiento. Tienes acceso al perfil psicológico completo de ${nombre} — 22 dimensiones validadas. Tu tarea es escribir el análisis final de su Sistema Operativo como emprendedor.
 
-  return `Genera la Síntesis Final del Sistema Operativo completo de este emprendedor. Es el análisis más importante del reporte — el cruce de las 22 dimensiones que revela el patrón completo. Devuelve SOLO JSON válido.
+PERFIL PSICOLÓGICO COMPLETO:
+Big Five: Apertura ${sc.openness}% | Responsabilidad ${sc.conscient}% | Extraversión ${sc.extraversion}% | Amabilidad ${sc.agreeable}% | Neuroticismo ${sc.neuroticism}%
+Locus ${sc.locus}% | Impostor ${sc.impostor}% | Autoestima ${sc.selfesteem}% | Autoeficacia ${sc.efficacy}% | Autocompasión ${sc.selfcompassion}%
+Motivación intrínseca ${sc.mot_intrinsic}% | Extrínseca ${sc.mot_extrinsic}% | Autonomía ${sc.mot_autonomy}%
+nAch ${sc.nach}% | Postergación ${sc.procras}% | Autocontrol ${sc.selfcontrol}%
+IE ${sc.eq}% | Apego ${sc.attachment}% | Rechazo ${sc.rejection}% | Resiliencia ${sc.resilience}%
+RIASEC dominante: ${r3} | Cognición ${sc.cognition}% | Regulatorio ${sc.regulatory}%
+Dark Triad: Narcisismo ${sc.dark_narc}% | Maquiavelismo ${sc.dark_mach}% | Psicopatía ${sc.dark_psych}%
+Valores top: ${topVals}
+Arquetipo: ${archetype.name} | Decisión: ${dstyle}
+${ctxStr}
 
-PERFIL COMPLETO — 22 DIMENSIONES:
-BIG FIVE: Apertura ${sc.openness}% | Responsabilidad ${sc.conscient}% | Extraversión ${sc.extraversion}% | Amabilidad ${sc.agreeable}% | Neuroticismo ${sc.neuroticism}%
-IDENTIDAD: Locus ${sc.locus}% | Impostor ${sc.impostor}% | Autoestima ${sc.selfesteem}% | Autoeficacia ${sc.efficacy}% | Autocompasión ${sc.selfcompassion}% | Rechazo ${sc.rejection}%
-MOTOR: Intrínseca ${sc.mot_intrinsic}% | Extrínseca ${sc.mot_extrinsic}% | Autonomía ${sc.mot_autonomy}% | nAch ${sc.nach}% | Resiliencia ${sc.resilience}%
-EJECUCIÓN: Decisión ${dstyle} | Postergación ${sc.procras}% | Autocontrol ${sc.selfcontrol}% | Foco ${sc.regulatory}% | Cognición ${sc.cognition}%
-ESTADO EMOCIONAL: PHQ-9 ${sc.phq9_score}/27 (${phqLabel}) | GAD-7 ${sc.gad7_score}/21 (${gadLabel})
-RELACIONAL: Apego ${sc.attachment}% | IE ${sc.eq}% | Dark Triad N:${sc.dark_narc}% M:${sc.dark_mach}% P:${sc.dark_psych}%
-ORIENTACIÓN: RIASEC ${r3} | Valores: ${topValues}
-ARQUETIPO: ${archetype.name}
+INSTRUCCIONES CRÍTICAS:
+- Escribe en segunda persona, directo a ${nombre}
+- Lenguaje simple, personal e introspectivo — como si un mentor que te conoce profundamente te hablara
+- Sin jerga psicológica ni términos técnicos
+- Cada sección debe ser específica a este perfil — nada genérico
+- Extenso y detallado — este es el corazón del reporte
+- Máximo impacto en mínimas palabras por insight
 
-INSTRUCCIÓN CRÍTICA: Esta síntesis debe revelar el SISTEMA COMPLETO — no una suma de partes, sino el patrón emergente de cómo las 22 dimensiones interactúan para crear una forma muy específica de emprender.
-
-BRECHA DE VALORES (integrar en la síntesis):
-Valores más altos: ${sc.values_raw.map((v,i)=>({l:VALUES_LABELS[i],v})).sort((a,b)=>b.v-a.v).slice(0,3).map(x=>x.l).join(', ')}
-Rasgos en tensión con esos valores: Responsabilidad ${sc.conscient}% | Autoestima ${sc.selfesteem}% | Impostor ${sc.impostor}% | Autocompasión ${sc.selfcompassion}% | Autocontrol ${sc.selfcontrol}%
-La síntesis debe incluir cómo la brecha entre valores y rasgos crea el techo invisible más importante de este perfil.
-
-Debe responder implícitamente las preguntas más profundas que esta persona nunca ha podido articular con claridad:
-— ¿Por qué sigo llegando al mismo punto y no puedo pasar de ahí?
-— ¿Por qué con todo lo que sé y lo que trabajo, no logro lo que quiero?
-— ¿Qué es lo que realmente me está frenando — y cuánto de eso viene de mucho antes de que abriera este negocio?
-— ¿Qué tendría que cambiar en mí, no en mi estrategia, para que las cosas sean diferentes?
-
-No suavices. No generalices. No des consuelo barato. Este análisis vale $120 porque dice lo que nadie más le dice con esta precisión.
-
-Devuelve exactamente este JSON:
+Genera las siguientes 10 secciones. FORMATO JSON estricto:
 {
-  "analysis": [
-    "Párrafo 1 (2 oraciones): El patrón central — cómo las dimensiones más dominantes de este perfil interactúan para crear su forma característica de operar. No solo los rasgos, sino el sistema que forman juntos. Usa los números reales. Sé muy específico sobre cómo se vive este patrón desde adentro.",
-    "Párrafo 2 (2 oraciones): La tensión principal — el conflicto interno más importante entre sus dimensiones. Qué se quiere y qué se bloquea. Cómo el estado emocional actual (PHQ-9 ${sc.phq9_score}/27, GAD-7 ${sc.gad7_score}/21) amplifca o interactúa con esta tensión estructural. Cómo se manifiesta en el negocio y en la vida.",
-    "Párrafo 3 (2 oraciones): El techo invisible — la combinación específica de factores que limita el crecimiento más allá de donde está ahora. Sé directo sobre qué tiene que cambiar y por qué. No es el mercado, no es la estrategia — es este patrón interno específico el que pone el límite."
-  ],
-  "highlight": "Máximo 20 palabras. La verdad más importante de este perfil.",
-  "accion": "Máximo 12 palabras. Una acción para esta semana."
+  "lo_que_destaco": "2-3 párrafos sobre los patrones más pronunciados y únicos de este perfil",
+  "de_un_vistazo": "1 párrafo que capture quién es como emprendedor en lenguaje humano",
+  "quien_eres": "2-3 párrafos sobre cómo funciona su mente, qué lo mueve, cómo decide",
+  "ventaja_natural": "2-3 párrafos sobre dónde brilla sin esfuerzo, roles y contextos donde su perfil es ventaja",
+  "lo_que_frena": "2-3 párrafos sobre sus patrones de autosabotaje específicos, nombrados con claridad",
+  "lo_que_necesitas": "2 párrafos sobre condiciones, entornos y estructuras que sacan lo mejor de él",
+  "socios_colaboradores": "2-3 párrafos sobre cómo relacionarse con socios/equipo, qué conversaciones debe tener, qué perfiles lo complementan",
+  "conversacion_contigo": "2 párrafos sobre el patrón interno más importante — la creencia limitante más cara, el acuerdo con sí mismo que más le cuesta",
+  "como_trabajar_conmigo": "2 párrafos en TERCERA PERSONA — cómo motivarlo, cómo darle feedback, qué lo desestabiliza, cómo aprovechar su perfil — pensado para que lo comparta con su equipo",
+  "blueprint": "7-8 insights concretos y accionables numerados, cada uno en 1-2 oraciones, para usar esta semana, este mes y en las próximas decisiones"
 }
-Responde ÚNICAMENTE con el JSON. Sin texto adicional.`;
+
+REGLAS:
+- Dentro de los strings NUNCA uses comillas dobles. Usa comillas simples si citas algo.
+- Sin texto fuera del JSON. Sin markdown. Primera línea { última línea }.
+- Cada sección debe tener suficiente profundidad — no menos de 100 palabras por sección excepto 'de_un_vistazo'
+- El 'blueprint' debe ser verdaderamente accionable y específico a este perfil`;
 }
 
 // ════════════════════════════════════════════════════
@@ -2825,7 +2899,7 @@ async function init(){
       });
 
       for (const [sid, tid, aid] of aiSections) {
-        await generateAISection(sid, tid, aid, sc, ans);
+        await generateAISection(sid, tid, aid, sc, ans, user);
         await new Promise(r => setTimeout(r, 1500)); // delay to avoid concurrent rate limit
       }
       _generationInProgress = false;

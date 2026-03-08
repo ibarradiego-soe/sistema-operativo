@@ -188,6 +188,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
   .likert-row{gap:4px}
   .lbtn{padding:10px 2px;font-size:13px}
 }
+
+/* Context screen */
+.ctx-options{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.ctx-btn{background:var(--surface);border:1px solid var(--border2);color:rgba(255,255,255,0.7);font-size:14px;font-weight:500;padding:12px 16px;border-radius:10px;cursor:pointer;text-align:left;font-family:inherit;transition:all .15s}
+.ctx-btn:hover{background:var(--surface2);border-color:rgba(255,255,255,0.2);color:#fff}
+.ctx-btn.selected{background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.5);color:#fff}
+.reg-textarea{resize:vertical;min-height:80px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -232,7 +239,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
 
     <div class="stats-row">
       <div class="stat-box"><div class="stat-n">22</div><div class="stat-l">Marcos científicos</div></div>
-      <div class="stat-box"><div class="stat-n">~50</div><div class="stat-l">Minutos</div></div>
+      <div class="stat-box"><div class="stat-n">~35</div><div class="stat-l">Minutos</div></div>
       <div class="stat-box"><div class="stat-n">⚡</div><div class="stat-l">Resultado inmediato</div></div>
     </div>
 
@@ -293,6 +300,50 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
 
     <button class="btn-start reg-submit" onclick="submitReg()">Continuar al análisis →</button>
     <p class="reg-foot">🔒 Tus datos se guardan de forma segura y nunca se venden ni se comparten con terceros.</p>
+  </div>
+</div>
+
+<div class="screen" id="scr-context">
+  <div class="reg-wrap">
+    <div class="reg-title">Cuéntanos sobre tu negocio</div>
+    <p class="reg-sub">Esta información ayuda a personalizar tu análisis con mayor precisión.</p>
+
+    <div class="reg-field">
+      <label class="reg-label">¿En qué momento estás como emprendedor?</label>
+      <div class="ctx-options" id="ctx-momento">
+        <button class="ctx-btn" onclick="selectCtx(this,'momento','Pensando en emprender')">🌱 Pensando en emprender</button>
+        <button class="ctx-btn" onclick="selectCtx(this,'momento','Emprendiendo solo')">🚀 Emprendiendo solo</button>
+        <button class="ctx-btn" onclick="selectCtx(this,'momento','Dueño de negocio con socios')">🤝 Dueño de negocio con socios</button>
+        <button class="ctx-btn" onclick="selectCtx(this,'momento','Buscando socio')">🔍 Buscando socio</button>
+        <button class="ctx-btn" onclick="selectCtx(this,'momento','Escalando un negocio establecido')">📈 Escalando un negocio establecido</button>
+        <button class="ctx-btn" onclick="selectCtx(this,'momento','Otro')">✦ Otro</button>
+      </div>
+    </div>
+
+    <div class="reg-field" id="ctx-rol-field" style="display:none">
+      <label class="reg-label">¿Cuál es tu rol y funciones dentro del negocio?</label>
+      <textarea class="reg-input reg-textarea" id="ctx-rol" placeholder="Describe brevemente qué haces día a día en tu negocio..." rows="3"></textarea>
+    </div>
+
+    <div class="reg-field" id="ctx-equipo-field" style="display:none">
+      <label class="reg-label">¿De cuántas personas es tu equipo?</label>
+      <div class="ctx-options" id="ctx-equipo">
+        <button class="ctx-btn" onclick="selectCtx(this,'equipo','Solo yo')">👤 Solo yo</button>
+        <button class="ctx-btn" onclick="selectCtx(this,'equipo','2 a 10 personas')">👥 2 a 10 personas</button>
+        <button class="ctx-btn" onclick="selectCtx(this,'equipo','11 a 50 personas')">🏢 11 a 50 personas</button>
+        <button class="ctx-btn" onclick="selectCtx(this,'equipo','Más de 50 personas')">🏭 Más de 50 personas</button>
+      </div>
+    </div>
+
+    <div class="reg-field">
+      <label class="reg-label">¿Cuáles han sido tus mayores obstáculos como emprendedor?</label>
+      <textarea class="reg-input reg-textarea" id="ctx-obstaculos" placeholder="Escribe con libertad — esto personaliza directamente tu análisis..." rows="4"></textarea>
+    </div>
+
+    <div id="ctx-error" class="reg-error">Por favor selecciona en qué momento estás y describe tus obstáculos.</div>
+
+    <button class="btn-start reg-submit" onclick="submitCtx()">Comenzar el análisis →</button>
+    <p class="reg-foot">🔒 Esta información es privada y solo se usa para personalizar tu reporte.</p>
   </div>
 </div>
 
@@ -900,6 +951,50 @@ function submitReg(){
 
   // Store user data in ST for passing to report
   ST.user = { nombre, apellido, correo: email, edad, pais, profesion };
+
+  // Go to context screen
+  show('context');
+}
+
+
+// ── CONTEXT SCREEN ──────────────────────────────────
+const _ctxSelections = {};
+
+function selectCtx(btn, field, value){
+  // Deselect siblings
+  btn.closest('.ctx-options').querySelectorAll('.ctx-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  _ctxSelections[field] = value;
+
+  // Show/hide conditional fields
+  if(field === 'momento'){
+    const isPensando = value === 'Pensando en emprender';
+    document.getElementById('ctx-rol-field').style.display   = isPensando ? 'none' : 'block';
+    document.getElementById('ctx-equipo-field').style.display = isPensando ? 'none' : 'block';
+  }
+}
+
+function submitCtx(){
+  const momento    = _ctxSelections['momento'] || '';
+  const equipo     = _ctxSelections['equipo']  || '';
+  const rol        = document.getElementById('ctx-rol').value.trim();
+  const obstaculos = document.getElementById('ctx-obstaculos').value.trim();
+  const errEl      = document.getElementById('ctx-error');
+  const isPensando = momento === 'Pensando en emprender';
+
+  if(!momento || !obstaculos || (!isPensando && !equipo)){
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  // Add context to ST.user
+  ST.user.contexto = {
+    momento,
+    rol: isPensando ? '' : rol,
+    equipo: isPensando ? 'N/A' : equipo,
+    obstaculos
+  };
 
   showIntro();
 }

@@ -1554,9 +1554,10 @@ function computeArchetype(sc){
 // ROBUST JSON EXTRACTOR
 // ════════════════════════════════════════════════════
 function extractJSON(text) {
-  // Strip json fences (backtick-backtick-backtick)
   const FENCE = String.fromCharCode(96,96,96);
   let s = text.trim();
+
+  // Strip code fences
   if (s.startsWith(FENCE)) {
     s = s.replace(new RegExp('^' + FENCE + 'json\\s*', 'i'), '').replace(new RegExp('^' + FENCE + '\\s*', 'i'), '');
     const closeIdx = s.lastIndexOf(FENCE);
@@ -1564,50 +1565,76 @@ function extractJSON(text) {
     s = s.trim();
   }
 
-  // Find first { 
+  // Find first {
   const start = s.indexOf('{');
   if (start === -1) throw new Error('No { found');
   s = s.slice(start);
 
-  // Find matching closing } 
+  // Find matching closing }
   let depth = 0, end = -1;
   for (let i = 0; i < s.length; i++) {
     if (s[i] === '{') depth++;
-    else if (s[i] === '}') {
-      depth--;
-      if (depth === 0) { end = i; break; }
-    }
+    else if (s[i] === '}') { depth--; if (depth === 0) { end = i; break; } }
   }
   const jsonStr = end > -1 ? s.slice(0, end + 1) : s;
 
   // Attempt 1: direct parse
   try { return JSON.parse(jsonStr); } catch(e1) {}
 
-  // Attempt 2: replace literal newlines/tabs inside the string
-  // We do a simple global replace — good enough for our JSON structure
-  const cleaned = jsonStr
-    .split('\n').join(' ')
-    .split('\r').join('')
-    .split('\t').join(' ');
+  // Attempt 2: clean newlines/tabs
+  const cleaned = jsonStr.split('\n').join(' ').split('\r').join('').split('\t').join(' ');
   try { return JSON.parse(cleaned); } catch(e2) {}
 
-  // Attempt 3: regex extract each field manually
+  // Attempt 3: sanitize inner quotes — replace unescaped " inside string values
+  try {
+    const sanitized = jsonStr.replace(
+      /("(?:analysis|highlight|accion|lo_que_destaco|de_un_vistazo|quien_eres|ventaja_natural|lo_que_frena|lo_que_necesitas|socios_colaboradores|conversacion_contigo|como_trabajar_conmigo|blueprint)"\s*:\s*")([\s\S]*?)("\s*[,}])/g,
+      function(match, key, val, end) {
+        // Escape any unescaped double quotes inside the value
+        var safeVal = val.replace(/\\"/g, '__ESCAPED__').replace(/"/g, '\\"').replace(/__ESCAPED__/g, '\\"');
+        return key + safeVal + end;
+      }
+    );
+    return JSON.parse(sanitized);
+  } catch(e3) {}
+
+  // Attempt 4: extract each synthesis key manually
   const result = {};
-  
-  // Extract analysis array — find content between the [ ] after "analysis":
+  const synthKeys = ['lo_que_destaco','de_un_vistazo','quien_eres','ventaja_natural','lo_que_frena',
+    'lo_que_necesitas','socios_colaboradores','conversacion_contigo','como_trabajar_conmigo','blueprint'];
+
+  synthKeys.forEach(function(key) {
+    // Find "key": "value" — read value char by char to handle embedded quotes
+    const keyIdx = cleaned.indexOf('"' + key + '"');
+    if (keyIdx === -1) return;
+    const colonIdx = cleaned.indexOf(':', keyIdx);
+    if (colonIdx === -1) return;
+    let vi = colonIdx + 1;
+    while (vi < cleaned.length && (cleaned[vi] === ' ' || cleaned[vi] === '\n')) vi++;
+    if (cleaned[vi] !== '"') return;
+    vi++; // skip opening quote
+    let val = '';
+    while (vi < cleaned.length) {
+      if (cleaned[vi] === '\\' && vi+1 < cleaned.length) { val += cleaned[vi+1]; vi += 2; continue; }
+      if (cleaned[vi] === '"') break;
+      val += cleaned[vi++];
+    }
+    if (val.length > 5) result[key] = val;
+  });
+
+  if (Object.keys(result).length > 0) return result;
+
+  // Attempt 5: extract analysis array for non-synthesis blocks
   const aStart = jsonStr.indexOf('"analysis"');
   if (aStart > -1) {
     const arrStart = jsonStr.indexOf('[', aStart);
     if (arrStart > -1) {
-      // Collect string values from the array
       const paras = [];
       let i = arrStart + 1;
       while (i < jsonStr.length) {
-        // Skip whitespace and commas
-        while (i < jsonStr.length && (jsonStr[i] === ' ' || jsonStr[i] === ',' || jsonStr[i] === '\n' || jsonStr[i] === '\r')) i++;
+        while (i < jsonStr.length && (jsonStr[i] === ' ' || jsonStr[i] === ',' || jsonStr[i] === '\n')) i++;
         if (jsonStr[i] === ']') break;
         if (jsonStr[i] === '"') {
-          // Read until closing quote (skip escaped quotes)
           i++;
           let str = '';
           while (i < jsonStr.length) {
@@ -1618,24 +1645,9 @@ function extractJSON(text) {
           if (str.length > 10) paras.push(str);
         } else { i++; }
       }
-      if (paras.length) result.analysis = paras;
+      if (paras.length) return { analysis: paras };
     }
   }
-
-  // Extract highlight
-  const hlMatch = cleaned.match(/"highlight"\s*:\s*"([^"]{10,})"/);
-  if (hlMatch) result.highlight = hlMatch[1];
-
-  // Extract actions
-  const actions = [];
-  const actRegex = /"titulo"\s*:\s*"([^"]+)"[^}]*"descripcion"\s*:\s*"([^"]+)"[^}]*"frecuencia"\s*:\s*"([^"]+)"[^}]*"tipo"\s*:\s*"([^"]+)"/g;
-  let m;
-  while ((m = actRegex.exec(cleaned)) !== null) {
-    actions.push({ titulo: m[1], descripcion: m[2], frecuencia: m[3], tipo: m[4] });
-  }
-  if (actions.length) result.actions = actions;
-
-  if (result.analysis && result.analysis.length > 0) return result;
 
   throw new Error('Could not extract valid JSON after all attempts');
 }
@@ -1835,6 +1847,86 @@ var items = raw.split('|').map(function(x){ return x.trim(); }).filter(function(
   container.style.display = 'flex';
 }
 
+
+// ════════════════════════════════════════════════════
+// SYNTHESIS — 10 individual API calls, one per section
+// ════════════════════════════════════════════════════
+async function generateSynthesis(sc, ans, user){
+  const container = document.getElementById('synthesis-sections');
+  const aiEl      = document.getElementById('ai-synthesis');
+  const keys = [
+    'lo_que_destaco','de_un_vistazo','quien_eres','ventaja_natural',
+    'lo_que_frena','lo_que_necesitas','socios_colaboradores',
+    'conversacion_contigo','como_trabajar_conmigo','blueprint'
+  ];
+
+  const parsed = {};
+  const isClaudeArtifact = window.ANTHROPIC_API_KEY ||
+    window.location.protocol === 'blob:' ||
+    !window.location.hostname.includes('.');
+
+  // Show progress in loader
+  if(aiEl) aiEl.innerHTML = '<div style="display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px"><div style="width:16px;height:16px;border-radius:50%;border:2px solid var(--muted2);border-top-color:var(--blue);animation:spin 1s linear infinite"></div><span id="synthesis-progress">Generando tu Sistema Operativo (1/10)...</span></div>';
+
+  for(let i = 0; i < keys.length; i++){
+    const key = keys[i];
+    const progressEl = document.getElementById('synthesis-progress');
+    if(progressEl) progressEl.textContent = 'Generando tu Sistema Operativo (' + (i+1) + '/10)...';
+
+    const prompt = buildSynthesisPrompt(sc, ans, user, key);
+    const sysPrompt = 'Eres un coach experto en psicología del emprendimiento. ' + (USER_LOCALE.tone || 'Escribe en español claro y directo.');
+
+    try {
+      let response;
+      if(isClaudeArtifact){
+        response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': window.ANTHROPIC_API_KEY || '',
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 800,
+            system: sysPrompt,
+            messages: [{ role: 'user', content: prompt }]
+          })
+        });
+      } else {
+        response = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ system: sysPrompt, prompt })
+        });
+      }
+
+      if(response.ok){
+        const data = await response.json();
+        const text = data.content?.[0]?.text || '';
+        parsed[key] = text.trim();
+      } else {
+        parsed[key] = '';
+      }
+    } catch(e){
+      parsed[key] = '';
+    }
+
+    // Small delay between calls
+    if(i < keys.length - 1) await new Promise(r => setTimeout(r, 800));
+  }
+
+  renderSynthesis(parsed);
+
+  // Save to localStorage
+  try {
+    const saved = JSON.parse(localStorage.getItem('soe_report') || '{}');
+    saved['synthesis'] = JSON.stringify(parsed);
+    localStorage.setItem('soe_report', JSON.stringify(saved));
+  } catch(e) {}
+}
+
 async function generateAISection(sectionId, targetId, actionsId, sc, ans, user){
   const sectionPrompts = {
     intro: buildIntroPrompt(sc, ans, user),
@@ -1847,7 +1939,7 @@ async function generateAISection(sectionId, targetId, actionsId, sc, ans, user){
     genius: buildGeniusPrompt(sc),
     'values-gap': buildValuesGapPrompt(sc),
     'roles': buildRolesPrompt(sc),
-    synthesis: buildSynthesisPrompt(sc, ans, user)
+    synthesis: '__synthesis__'  // handled separately
   };
 
   const prompt = sectionPrompts[sectionId];
@@ -1931,17 +2023,8 @@ ${USER_LOCALE.country ? 'El lector vive en ' + USER_LOCALE.country + '. Adapta e
       return;
     }
 
-    // Synthesis: use renderSynthesis for the 10-section layout
-    if(sectionId === 'synthesis'){
-      renderSynthesis(parsed);
-      // Save to localStorage
-      try {
-        const saved = JSON.parse(localStorage.getItem('soe_report') || '{}');
-        saved[sectionId] = JSON.stringify(parsed);
-        localStorage.setItem('soe_report', JSON.stringify(saved));
-      } catch(e) {}
-      return;
-    }
+    // Synthesis: handled by generateSynthesis() — should not reach here
+    if(sectionId === 'synthesis') return;
 
     // Populate analysis (all other blocks)
     if(parsed.analysis){
@@ -2333,7 +2416,7 @@ Devuelve exactamente este JSON:
 Responde ÚNICAMENTE con el JSON. Sin texto adicional.`;
 }
 
-function buildSynthesisPrompt(sc, ans, user){
+function buildSynthesisPrompt(sc, ans, user, sectionKey){
   const archetype = computeArchetype(sc);
   const dstyle    = decisionStyle(ans);
   const r3        = riasecTop3(sc);
@@ -2341,47 +2424,42 @@ function buildSynthesisPrompt(sc, ans, user){
   const ctxStr    = buildContextStr(user);
   const nombre    = user && user.nombre ? user.nombre : 'el usuario';
 
-  return `Eres un coach experto en psicología del emprendimiento. Tienes acceso al perfil psicológico completo de ${nombre} — 22 dimensiones validadas. Tu tarea es escribir el análisis final de su Sistema Operativo como emprendedor.
+  const profile = `PERFIL: Big Five: O${sc.openness}% C${sc.conscient}% E${sc.extraversion}% A${sc.agreeable}% N${sc.neuroticism}% | Locus ${sc.locus}% | Impostor ${sc.impostor}% | Autoestima ${sc.selfesteem}% | Autoeficacia ${sc.efficacy}% | Autocompasión ${sc.selfcompassion}% | Motivación Int${sc.mot_intrinsic}% Ext${sc.mot_extrinsic}% | nAch ${sc.nach}% | Postergación ${sc.procras}% | IE ${sc.eq}% | Resiliencia ${sc.resilience}% | RIASEC: ${r3} | Valores: ${topVals} | Arquetipo: ${archetype.name} | Decisión: ${dstyle}${ctxStr}`;
 
-PERFIL PSICOLÓGICO COMPLETO:
-Big Five: Apertura ${sc.openness}% | Responsabilidad ${sc.conscient}% | Extraversión ${sc.extraversion}% | Amabilidad ${sc.agreeable}% | Neuroticismo ${sc.neuroticism}%
-Locus ${sc.locus}% | Impostor ${sc.impostor}% | Autoestima ${sc.selfesteem}% | Autoeficacia ${sc.efficacy}% | Autocompasión ${sc.selfcompassion}%
-Motivación intrínseca ${sc.mot_intrinsic}% | Extrínseca ${sc.mot_extrinsic}% | Autonomía ${sc.mot_autonomy}%
-nAch ${sc.nach}% | Postergación ${sc.procras}% | Autocontrol ${sc.selfcontrol}%
-IE ${sc.eq}% | Apego ${sc.attachment}% | Rechazo ${sc.rejection}% | Resiliencia ${sc.resilience}%
-RIASEC dominante: ${r3} | Cognición ${sc.cognition}% | Regulatorio ${sc.regulatory}%
-Dark Triad: Narcisismo ${sc.dark_narc}% | Maquiavelismo ${sc.dark_mach}% | Psicopatía ${sc.dark_psych}%
-Valores top: ${topVals}
-Arquetipo: ${archetype.name} | Decisión: ${dstyle}
-${ctxStr}
+  const sectionPrompts = {
+    lo_que_destaco: `${profile}
 
-INSTRUCCIONES CRÍTICAS:
-- Escribe en segunda persona, directo a ${nombre}
-- Lenguaje simple, personal e introspectivo — como si un mentor que te conoce profundamente te hablara
-- Sin jerga psicológica ni términos técnicos
-- Cada sección debe ser específica a este perfil — nada genérico
-- Extenso y detallado — este es el corazón del reporte
-- Máximo impacto en mínimas palabras por insight
+Escribe 2-3 párrafos sobre los patrones más pronunciados y únicos de ${nombre} basándote en su perfil psicológico. Sé específico a estos números, no genérico. Responde SOLO con el texto, sin JSON, sin títulos.`,
+    de_un_vistazo: `${profile}
 
-Genera las siguientes 10 secciones. FORMATO JSON estricto:
-{
-  "lo_que_destaco": "2-3 párrafos sobre los patrones más pronunciados y únicos de este perfil",
-  "de_un_vistazo": "1 párrafo que capture quién es como emprendedor en lenguaje humano",
-  "quien_eres": "2-3 párrafos sobre cómo funciona su mente, qué lo mueve, cómo decide",
-  "ventaja_natural": "2-3 párrafos sobre dónde brilla sin esfuerzo, roles y contextos donde su perfil es ventaja",
-  "lo_que_frena": "2-3 párrafos sobre sus patrones de autosabotaje específicos, nombrados con claridad",
-  "lo_que_necesitas": "2 párrafos sobre condiciones, entornos y estructuras que sacan lo mejor de él",
-  "socios_colaboradores": "2-3 párrafos sobre cómo relacionarse con socios/equipo, qué conversaciones debe tener, qué perfiles lo complementan",
-  "conversacion_contigo": "2 párrafos sobre el patrón interno más importante — la creencia limitante más cara, el acuerdo con sí mismo que más le cuesta",
-  "como_trabajar_conmigo": "2 párrafos en TERCERA PERSONA empezando con el nombre: '[nombre] es alguien que...' — cómo motivarlo, cómo darle feedback, qué lo desestabiliza, cómo aprovechar su perfil — pensado para que lo comparta con sus socios",
-  "blueprint": "7-8 insights concretos y accionables. Cada insight en 1-2 oraciones. Separa cada insight con el caracter | (pipe). Sin numeración, sin bullets, solo el texto de cada insight separado por |"
-}
+Escribe 1 párrafo que capture quién es ${nombre} como emprendedor en lenguaje humano y directo. Responde SOLO con el texto.`,
+    quien_eres: `${profile}
 
-REGLAS:
-- Dentro de los strings NUNCA uses comillas dobles. Usa comillas simples si citas algo.
-- Sin texto fuera del JSON. Sin markdown. Primera línea { última línea }.
-- Cada sección debe tener suficiente profundidad — no menos de 100 palabras por sección excepto 'de_un_vistazo'
-- El 'blueprint' debe ser verdaderamente accionable y específico a este perfil`;
+Escribe 2-3 párrafos sobre cómo funciona la mente de ${nombre}, qué lo mueve, cómo decide. Dirígete a él en segunda persona. Responde SOLO con el texto.`,
+    ventaja_natural: `${profile}
+
+Escribe 2-3 párrafos sobre dónde brilla ${nombre} sin esfuerzo como emprendedor, qué roles y contextos aprovechan su perfil como ventaja. Responde SOLO con el texto.`,
+    lo_que_frena: `${profile}
+
+Escribe 2-3 párrafos sobre los patrones de autosabotaje específicos de ${nombre}, nombrados con claridad y sin suavizarlos. Responde SOLO con el texto.`,
+    lo_que_necesitas: `${profile}
+
+Escribe 2 párrafos sobre las condiciones, entornos y estructuras que sacan lo mejor de ${nombre} para operar bien. Responde SOLO con el texto.`,
+    socios_colaboradores: `${profile}
+
+Escribe 2-3 párrafos sobre cómo ${nombre} debe relacionarse con socios y colaboradores, qué conversaciones necesita tener, qué perfiles lo complementan. Responde SOLO con el texto.`,
+    conversacion_contigo: `${profile}
+
+Escribe 2 párrafos sobre el patrón interno más importante de ${nombre} — la creencia limitante más cara, el acuerdo con sí mismo que más le cuesta. Responde SOLO con el texto.`,
+    como_trabajar_conmigo: `${profile}
+
+Escribe 2 párrafos en TERCERA PERSONA sobre ${nombre}, empezando con "${nombre} es alguien que...". Explica cómo motivarlo, cómo darle feedback, qué lo desestabiliza. Pensado para compartir con socios. Responde SOLO con el texto.`,
+    blueprint: `${profile}
+
+Escribe 7 insights concretos y accionables para ${nombre}. Cada insight en 1-2 oraciones. Separa cada uno con el carácter | (pipe). Sin numeración. Responde SOLO con los insights separados por |.`
+  };
+
+  return sectionPrompts[sectionKey] || '';
 }
 
 // ════════════════════════════════════════════════════
@@ -2869,8 +2947,12 @@ async function init(){
       });
 
       for (const [sid, tid, aid] of aiSections) {
-        await generateAISection(sid, tid, aid, sc, ans, user);
-        await new Promise(r => setTimeout(r, 1500)); // delay to avoid concurrent rate limit
+        if(sid === 'synthesis'){
+          await generateSynthesis(sc, ans, user);
+        } else {
+          await generateAISection(sid, tid, aid, sc, ans, user);
+          await new Promise(r => setTimeout(r, 1500));
+        }
       }
       _generationInProgress = false;
 
@@ -3122,8 +3204,12 @@ function restoreSavedSections() {
     for (const [sid, html] of Object.entries(saved)) {
       const targetId = sectionMap[sid];
       if (targetId) {
-        const el = document.getElementById(targetId);
-        if (el) { el.innerHTML = html; restored++; }
+        if (sid === 'synthesis') {
+          try { renderSynthesis(JSON.parse(html)); restored++; } catch(e) {}
+        } else {
+          const el = document.getElementById(targetId);
+          if (el) { el.innerHTML = html; restored++; }
+        }
       }
     }
     return restored > 0;
